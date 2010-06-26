@@ -19,11 +19,11 @@ Net::LDAP::Makepath - Provides a methode for creating paths in LDAP simply.
 
 =head1 VERSION
 
-Version 1.0.0
+Version 1.0.1
 
 =cut
 
-our $VERSION = '1.0.0';
+our $VERSION = '1.0.1';
 
 
 =head1 SYNOPSIS
@@ -46,7 +46,7 @@ our $VERSION = '1.0.0';
 	#objectClass: top
 	#objectClass: orginationalUnit
 	#ou: path
-	my $returned=LDAPmakep+athSimple($ldap, ["top", "organizationalUnit"], "ou",
+	my $returned=LDAPmakepathSimple($ldap, ["top", "organizationalUnit"], "ou",
 						"some,path", "dc=foo,dc=bar")
     if(!returned){
     	print "LDAPmakepathSimple failed.";
@@ -59,7 +59,7 @@ LDAPmakepathSimple
 
 =head1 FUNCTIONS
 
-=head2 LDAPmakepath
+=head2 LDAPmakepathSimple
 
 This creates a path from a comma seperated path.  Five arguements are required.
 
@@ -110,8 +110,10 @@ sub LDAPmakepathSimple {
 		#update it and warn if it fails.
 		my $mesg=$entry->update($ldap);
 		if($mesg->is_error){
-			warn("Adding '".$dn."' failed.");
-			return undef;
+			if($pathAint == $#pathA){
+				warn("Adding '".$dn."' failed. Path creation failed.");
+				return undef;
+			};
 		};
 		
 		$pathAint++;
